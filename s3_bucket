@@ -1,0 +1,25 @@
+resource "aws_s3_bucket" "script_s3_bucket" {
+    bucket = "${var.client}-${var.region}-bucket"
+    acl = "private"
+
+    tags {
+        Name = "${var.client}_${var.region}_bucket"
+        customer = "${var.client}"
+    }
+}
+
+resource "aws_s3_bucket_object" "setup_credential" {
+    bucket = "${aws_s3_bucket.script_s3_bucket.id}"
+    acl    = "public-read"
+    key = "setup_credential.sh"
+    source = "./scripts/setup_credential.sh"
+    etag = "${md5(file("./scripts/setup_credential.sh"))}"
+}
+
+resource "aws_s3_bucket_object" "install_updates" {
+    bucket = "${aws_s3_bucket.script_s3_bucket.id}"
+    acl    = "public-read"
+    key = "install_updates.sh"
+    source = "./scripts/install_updates.sh"
+    etag = "${md5(file("./scripts/install_updates.sh"))}"
+}
