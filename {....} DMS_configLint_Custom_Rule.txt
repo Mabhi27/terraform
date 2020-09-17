@@ -1,0 +1,143 @@
+version: 1
+description: Rules for Terraform configuration files
+type: Terraform
+files:
+  - "*.tf"
+rules:
+
+#Instance type checking
+
+  - id: INSTANCE_TYPE
+    message: Rule for checking instance type
+    resource: aws_instance
+    assertions:
+      - key: instance_type
+        op: in
+        value: t2.micro,m3.medium
+    severity: Warning
+
+#Replication instance checking
+
+  - id: Rule for checking the service apply parameter 
+    resource: aws_dms_replication_instance
+    assertions:
+      - key: apply_immediately
+        op: in
+        value: true
+    severity: FAILURE
+
+#checking auto_minor_version_upgrade
+
+  - id: Rule for checking the auto minior version upgrade
+    resource: aws_dms_replication_instance
+    assertions:
+      - key: auto_minor_version_upgrade 
+        op: in
+        value: true
+    severity: FAILURE
+
+#checking multi_az
+
+  - id: Rule for checking the multi az
+    resource: aws_dms_replication_instance
+    assertions:
+      - key: multi_az 
+        op: in
+        value: false
+    severity: FAILURE
+
+#checking Dms instance class
+  
+  - id: Rule for checking the replication instance class
+    resource: aws_dms_replication_instance
+    assertions: 
+      - key: replication_instance_class
+        op: present
+        value: dms.t2.micro
+    serverity: FAILURE
+
+# checking engine version
+
+  - id: engine_version
+    resource: aws_dms_replication_instance
+    assertions: 
+      - key: engine_version
+        op: present
+        value: 3.1.4
+    severity: FAILURE
+
+# checking replication instance class
+
+  - id: replication_instance_arn
+    resource: aws_dms_replication_task
+    assertions: 
+      - key: replication_instance_arn
+        op: present
+    severity: FAILURE
+
+# checking endpoint arn
+
+  - id: source_endpoint_arn
+    resource: aws_dms_replication_task
+    assertions: 
+      - key: source_endpoint_arn
+        op: present
+    severity: FAILURE
+
+# checking target endpoint arn
+
+  - id: target_endpoint_arn
+    resource: aws_dms_replication_task
+    assertions: 
+      - key: target_endpoint_arn
+        op: present
+    severity: FAILURE
+
+# checking sg_ids
+
+  - id: vpc_security_group_ids
+    resource: aws_dms_replication_instance
+    assertions: 
+      - key: vpc_security_group_ids
+        op: present
+    severity: Warning
+
+# checking publicy accessible
+
+  - id: publicly_accessible
+    resource: aws_dms_replication_instance
+    assertions: 
+      - key: publicly_accessible
+        op: is-false
+    severity: Warning
+
+# checking preferred maintinence window
+
+  - id: preferred_maintenance_window
+    resource: aws_dms_replication_instance
+    assertions: 
+      - key: preferred_maintenance_window
+        op: eq
+        value: sun:10:30-sun:14:30
+    severity: Warning
+
+# checking kms key arn
+  - id: Rules for kms key arn
+    resource: aws_dms_replication_instance
+    assertions: 
+      - key: kms_key_arn
+        op: eq
+        value: arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012
+    severity: WARNING
+
+# checking source endpoint engine type
+  - id: Rules for source endpoint
+    resource: aws_dms_endpoint
+    assertions: 
+      - key: engine_name
+        op: present
+        value: aurora
+    severity: WARNING
+
+   
+   
